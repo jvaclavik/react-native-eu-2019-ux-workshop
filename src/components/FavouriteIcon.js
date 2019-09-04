@@ -1,13 +1,26 @@
-import React from 'react';
-import {
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Image,
-  View,
-} from 'react-native';
-import iconHeart from '../../assets/icon_heart.png';
+import React from "react";
+import { StyleSheet, TouchableWithoutFeedback, Image } from "react-native";
+import Animated from "react-native-reanimated";
+import { runLinearTiming } from "../utils/animationHelpers";
+
+import iconHeart from "../../assets/icon_heart.png";
+const { Value, Clock, View } = Animated;
 
 class FavouriteIcon extends React.Component {
+  clock = new Clock();
+  toValue = new Value(0.2);
+  opacity = runLinearTiming({
+    clock: this.clock,
+    toValue: this.toValue,
+    position: new Value(0.2)
+  });
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.checked !== this.props.checked) {
+      this.toValue.setValue(this.props.checked ? 1 : 0.2);
+    }
+  }
+
   render() {
     return (
       <TouchableWithoutFeedback
@@ -16,7 +29,7 @@ class FavouriteIcon extends React.Component {
       >
         <View
           style={{
-            opacity: this.props.checked ? 1 : 0.2,
+            opacity: this.opacity
           }}
         >
           <Image source={iconHeart} style={style.icon} />
@@ -33,6 +46,6 @@ const style = StyleSheet.create({
     width: 30,
     height: 30,
     marginRight: 10,
-    tintColor: '#3903fc',
-  },
+    tintColor: "#3903fc"
+  }
 });

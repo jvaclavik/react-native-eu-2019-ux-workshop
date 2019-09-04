@@ -1,24 +1,25 @@
-import React from 'react';
+import React from "react";
 import {
   StyleSheet,
   SafeAreaView,
   Platform,
   StatusBar,
-  View,
-} from 'react-native';
+  View
+} from "react-native";
+import Animated from "react-native-reanimated";
 
-import Login from './Login';
-import ScreensToggleIcon from '../components/ScreensToggleIcon';
-import SongList from '../components/SongList';
-import Player from '../components/Player';
-import songs from '../../assets/topTracks.json';
+import Login from "./Login";
+import ScreensToggleIcon from "../components/ScreensToggleIcon";
+import SongList from "../components/SongList";
+import Player from "../components/Player";
+import songs from "../../assets/topTracks.json";
 
 class Home extends React.Component {
   state = {
     currentSong: songs.tracks[0],
     currentSongDuration: 10,
     songs: songs.tracks,
-    showLoginScreen: false,
+    showLoginScreen: false
   };
 
   handleSongPress = currentSong => {
@@ -27,7 +28,7 @@ class Home extends React.Component {
 
   handleSongRemove = id => {
     this.setState(({ songs }) => ({
-      songs: songs.filter(item => item.track.id !== id),
+      songs: songs.filter(item => item.track.id !== id)
     }));
   };
 
@@ -37,16 +38,16 @@ class Home extends React.Component {
         song.track.id === id
           ? {
               ...song,
-              isFavourite: !song.isFavourite,
+              isFavourite: !song.isFavourite
             }
           : song
-      ),
+      )
     }));
   };
 
   handleLoginScreenToggle = () => {
     this.setState(prevState => ({
-      showLoginScreen: !prevState.showLoginScreen,
+      showLoginScreen: !prevState.showLoginScreen
     }));
   };
 
@@ -55,10 +56,10 @@ class Home extends React.Component {
       <SafeAreaView style={styles.container}>
         <View style={styles.content}>
           <ScreensToggleIcon
-            color={'#131313'}
+            color={"#131313"}
             onPress={this.handleLoginScreenToggle}
           />
-          <StatusBar barStyle={'dark-content'} />
+          <StatusBar barStyle={"dark-content"} />
           <Player
             currentSong={this.state.currentSong}
             duration={this.state.currentSongDuration}
@@ -88,10 +89,10 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
-    backgroundColor: '#FFF',
+    paddingTop: Platform.OS === "ios" ? 0 : StatusBar.currentHeight,
+    backgroundColor: "#FFF"
   },
   content: {
-    flex: 1,
-  },
+    flex: 1
+  }
 });

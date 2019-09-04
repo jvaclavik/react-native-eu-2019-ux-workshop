@@ -8,9 +8,12 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "expo": "^34.0.1",
+    "expo": "^34.0.4",
+    "expo-cli": "^3.0.10",
+    "global": "^4.4.0",
     "react": "16.8.3",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz"
+    "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",
+    "react-native-reanimated": "^1.2.0"
   },
   "devDependencies": {
     "@callstack/eslint-config": "^6.0.0",

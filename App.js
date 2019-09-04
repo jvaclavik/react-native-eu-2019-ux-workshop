@@ -1,15 +1,15 @@
-import React from 'react';
+import React from "react";
 
-import Home from './src/screens/Home';
+import Home from "./src/screens/Home";
 
 class App extends React.Component {
   state = {
-    isDarkMode: false,
+    isDarkMode: false
   };
 
   handleDarkModeToggle = () => {
     this.setState(prevState => ({
-      isDarkMode: !prevState.isDarkMode,
+      isDarkMode: !prevState.isDarkMode
     }));
   };
 
