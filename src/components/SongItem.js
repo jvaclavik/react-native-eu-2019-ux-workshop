@@ -6,7 +6,11 @@ import Animated from "react-native-reanimated";
 import FavouriteIcon from "./FavouriteIcon";
 import SmallSongImage from "./SmallSongImage";
 import { ROW_HEIGHT } from "../utils/constants";
-import { runSpring, runSwipeDecay } from "../utils/animationHelpers";
+import {
+  runSpring,
+  runSwipeDecay,
+  runLinearTiming
+} from "../utils/animationHelpers";
 
 const { Value, event, cond, eq, stopClock, Clock, greaterThan } = Animated;
 // greaterThan
@@ -15,8 +19,10 @@ class SongItem extends React.Component {
     super(props);
     const springClock = new Clock();
     const swipeClock = new Clock();
+    const heightClock = new Clock();
     const dragX = new Value(0);
     const velocityX = new Value(0);
+    this.height = new Value(ROW_HEIGHT);
 
     this.gestureState = new Value(State.UNDETERMINED);
     this.onGestureEvent = event([
@@ -34,7 +40,15 @@ class SongItem extends React.Component {
       [stopClock(springClock), stopClock(swipeClock), dragX],
       cond(
         greaterThan(dragX, 80),
-        runSwipeDecay(swipeClock, velocityX, dragX),
+        [
+          runLinearTiming({
+            clock: heightClock,
+            toValue: 0,
+            position: this.height,
+            duration: 100
+          }),
+          runSwipeDecay(swipeClock, velocityX, dragX)
+        ],
         runSpring(springClock, dragX)
       )
     );
@@ -68,7 +82,10 @@ class SongItem extends React.Component {
           <Animated.View
             style={[
               styles.container,
-              { transform: [{ translateX: this.translateX }] }
+              {
+                transform: [{ translateX: this.translateX }],
+                height: this.height
+              }
             ]}
           >
             <View style={styles.song}>
@@ -99,8 +116,7 @@ export default SongItem;
 
 const styles = StyleSheet.create({
   container: {
-    overflow: "hidden",
-    height: ROW_HEIGHT
+    overflow: "hidden"
   },
   song: {
     flex: 1,
