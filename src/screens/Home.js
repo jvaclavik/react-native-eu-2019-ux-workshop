@@ -6,7 +6,6 @@ import {
   StatusBar,
   View
 } from "react-native";
-import Animated from "react-native-reanimated";
 
 import Login from "./Login";
 import ScreensToggleIcon from "../components/ScreensToggleIcon";
