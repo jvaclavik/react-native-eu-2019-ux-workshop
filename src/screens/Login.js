@@ -7,12 +7,33 @@ import {
   TextInput,
   TouchableHighlight,
   View,
-  Switch
+  Switch,
+  I18nManager
 } from "react-native";
+import * as Localization from "expo-localization";
+import i18n from "i18n-js";
+
+import { en, pl, ar } from "../utils/translations";
+
 import { Ionicons } from "@expo/vector-icons";
 import { withTheme } from "../utils/theming";
 
 import ScreensToggleIcon from "../components/ScreensToggleIcon";
+
+i18n.defaultLocale = "en";
+i18n.fallbacks = true;
+
+i18n.translations = {
+  en: en,
+  pl: pl,
+  ar: ar
+};
+
+const currentLocale = Localization.locale;
+const isRTL = currentLocale.indexOf("ar") === 0;
+
+I18nManager.allowRTL = isRTL;
+I18nManager.forceRTL(isRTL);
 
 class Login extends React.Component {
   state = {
@@ -41,7 +62,7 @@ class Login extends React.Component {
           shouldClose
         />
         <StatusBar barStyle={"dark-content"} />
-        <Text style={dynamicStyles.header}>Nice to see you!</Text>
+        <Text style={dynamicStyles.header}>{i18n.t("header")}</Text>
         <View style={dynamicStyles.inputGroup}>
           <View style={[dynamicStyles.row, dynamicStyles.inputRow]}>
             <Ionicons
@@ -55,7 +76,7 @@ class Login extends React.Component {
               value={this.state.loginValue}
               autoCapitalize="none"
               keyboardType="email-address"
-              placeholder="e-mail"
+              placeholder={i18n.t("email")}
               placeholderTextColor={theme.primaryTextColor}
             />
           </View>
@@ -67,7 +88,7 @@ class Login extends React.Component {
               value={this.state.passwordValue}
               returnKeyType="go"
               autoCapitalize="none"
-              placeholder="password"
+              placeholder={i18n.t("password")}
               placeholderTextColor={theme.primaryTextColor}
               secureTextEntry
             />
@@ -81,7 +102,9 @@ class Login extends React.Component {
                 true: theme.accentColor
               }}
             />
-            <Text style={dynamicStyles.toggleLabel}>Remember me</Text>
+            <Text style={dynamicStyles.toggleLabel}>
+              {i18n.t("remember_me")}
+            </Text>
           </View>
           <View style={dynamicStyles.row}>
             <Switch
@@ -92,7 +115,7 @@ class Login extends React.Component {
                 true: theme.accentColor
               }}
             />
-            <Text style={dynamicStyles.toggleLabel}>Dark mode</Text>
+            <Text style={dynamicStyles.toggleLabel}>{i18n.t("dark_mode")}</Text>
           </View>
         </View>
         <TouchableHighlight style={dynamicStyles.button}>
