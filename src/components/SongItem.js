@@ -6,21 +6,24 @@ import Animated from "react-native-reanimated";
 import FavouriteIcon from "./FavouriteIcon";
 import SmallSongImage from "./SmallSongImage";
 import { ROW_HEIGHT } from "../utils/constants";
-import { runSpring } from "../utils/animationHelpers";
+import { runSpring, runSwipeDecay } from "../utils/animationHelpers";
 
-const { Value, event, cond, eq, stopClock, Clock } = Animated;
-
+const { Value, event, cond, eq, stopClock, Clock, greaterThan } = Animated;
+// greaterThan
 class SongItem extends React.Component {
   constructor(props) {
     super(props);
     const springClock = new Clock();
+    const swipeClock = new Clock();
     const dragX = new Value(0);
+    const velocityX = new Value(0);
 
     this.gestureState = new Value(State.UNDETERMINED);
     this.onGestureEvent = event([
       {
         nativeEvent: {
           translationX: dragX,
+          velocityX: velocityX,
           state: this.gestureState
         }
       }
@@ -28,8 +31,12 @@ class SongItem extends React.Component {
 
     this.translateX = cond(
       eq(this.gestureState, State.ACTIVE),
-      [stopClock(springClock), dragX],
-      runSpring(springClock, dragX)
+      [stopClock(springClock), stopClock(swipeClock), dragX],
+      cond(
+        greaterThan(dragX, 80),
+        runSwipeDecay(swipeClock, velocityX, dragX),
+        runSpring(springClock, dragX)
+      )
     );
   }
 

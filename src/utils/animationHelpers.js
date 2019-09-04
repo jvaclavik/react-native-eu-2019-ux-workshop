@@ -9,7 +9,8 @@ const {
   timing,
   Value,
   SpringUtils,
-  spring
+  spring,
+  decay
 } = Animated;
 
 export function runLinearTiming({ clock, toValue, duration = 200, position }) {
@@ -38,7 +39,27 @@ export function runLinearTiming({ clock, toValue, duration = 200, position }) {
   ]);
 }
 
-export function runSwipeDecay() {}
+export function runSwipeDecay(clock, velocity, position) {
+  const state = {
+    finished: new Value(0),
+    position: position,
+    time: new Value(0),
+    velocity: velocity
+  };
+  const config = { deceleration: 0.995 };
+
+  return [
+    cond(clockRunning(clock), 0, [
+      set(state.finished, 0),
+      set(state.velocity, velocity),
+      set(state.position, position),
+      startClock(clock)
+    ]),
+    decay(clock, state, config),
+    cond(state.finished, [stopClock(clock)]),
+    state.position
+  ];
+}
 
 export function runSpring(clock, position) {
   const state = {
