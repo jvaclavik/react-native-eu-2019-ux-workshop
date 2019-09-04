@@ -1,25 +1,36 @@
 import React from "react";
 import { Text, StyleSheet, View, TouchableWithoutFeedback } from "react-native";
-import { PanGestureHandler } from "react-native-gesture-handler";
+import { PanGestureHandler, State } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 
 import FavouriteIcon from "./FavouriteIcon";
 import SmallSongImage from "./SmallSongImage";
 import { ROW_HEIGHT } from "../utils/constants";
+import { runSpring } from "../utils/animationHelpers";
 
-const { Value, event } = Animated;
+const { Value, event, cond, eq, stopClock, Clock } = Animated;
 
 class SongItem extends React.Component {
   constructor(props) {
     super(props);
-    this.translateX = new Value(0);
+    const springClock = new Clock();
+    const dragX = new Value(0);
+
+    this.gestureState = new Value(State.UNDETERMINED);
     this.onGestureEvent = event([
       {
         nativeEvent: {
-          translationX: this.translateX
+          translationX: dragX,
+          state: this.gestureState
         }
       }
     ]);
+
+    this.translateX = cond(
+      eq(this.gestureState, State.ACTIVE),
+      [stopClock(springClock), dragX],
+      runSpring(springClock, dragX)
+    );
   }
 
   handleHideEnd = () => {
@@ -30,9 +41,6 @@ class SongItem extends React.Component {
     this.props.onPress(this.props.item);
   };
 
-  // onGestureEvent = e => {
-  //   console.log("onGestureEvent", e);
-  // };
   onHandlerStateChange = e => {
     console.log("onHandlerStateChange", e);
   };
@@ -46,7 +54,7 @@ class SongItem extends React.Component {
       <TouchableWithoutFeedback onPress={this.handlePress}>
         <PanGestureHandler
           onGestureEvent={this.onGestureEvent}
-          onHandlerStateChange={this.onHandlerStateChange}
+          onHandlerStateChange={this.onGestureEvent}
           maxPointers={1}
           activeOffsetX={10}
         >
