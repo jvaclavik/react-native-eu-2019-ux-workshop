@@ -8,6 +8,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@callstack/react-theme-provider": "^3.0.3",
     "expo": "^34.0.4",
     "expo-cli": "^3.0.10",
     "global": "^4.4.0",
